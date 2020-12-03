@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Real-Time Chart with Flask, Sqlite, chart.js, Arduino, 18B20, FDC1004</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--suppress JSUnresolvedLibraryURL -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<!--suppress JSUnresolvedLibraryURL -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!--suppress JSUnresolvedLibraryURL -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+<script>
+	var time1s = {{time1s|safe}}; 
+	var temps1 = {{temps1|safe}};
+	var temps2 = {{temps2|safe}};
+	var temps3 = {{temps3|safe}};
+	var temps4 = {{temps4|safe}};
+	var capacitance1s = {{capacitance1s|safe}};
+	var capacitance2s = {{capacitance2s|safe}};
+    $(document).ready(function () {
+        const config = {
+            type: 'line',
+            data: {
+                labels: time1s,
+                datasets: [{
+                    label: "Temp1",
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: temps1,
+                    fill: false,
+					yAxisID: 'A',
+                },
+				{
+                    label: "Temp2",
+                    backgroundColor: 'rgb(255, 249, 0)',
+                    borderColor: 'rgb(255, 249, 0)',
+                    data: temps2,
+                    fill: false,
+					yAxisID: 'A',
+                },
+				{
+                    label: "Temp3",
+                    backgroundColor: 'rgb(64, 224, 208)',
+                    borderColor: 'rgb(64, 224, 208)',
+                    data: temps3,
+                    fill: false,
+					yAxisID: 'A',
+                },
+				{
+                    label: "Temp4",
+                    backgroundColor: 'rgb(0, 128, 255)',
+                    borderColor: 'rgb(0, 128, 255)',
+                    data: temps4,
+                    fill: false,
+					yAxisID: 'A',
+                },
+				{
+                    label: "Cap1-right axis",
+                    backgroundColor: 'rgb(44, 160, 44)',
+                    borderColor: 'rgb(44, 160, 44)',
+                    data: capacitance1s,
+					borderDash: [2, 2],
+                    fill: false,
+					yAxisID: 'B',
+                },
+				{
+                    label: "Cap2-right axis",
+                    backgroundColor: 'rgb(243, 51, 255)',
+                    borderColor: 'rgb(243, 51, 255)',
+                    data: capacitance2s,
+					borderDash: [2, 2],
+                    fill: false,
+					yAxisID: 'B',
+                }],
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Real-Time Chart with Flask, Sqlite, chart.js, Arduino, 18B20, FDC1004'
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time'
+                        }
+                    }],
+                    yAxes: [{
+                         id: "A",
+						 position: 'left',
+						 scaleLabel: { display: true, labelString: 'Temperature oC' },
+						 ticks: { suggestedMax: -20,  suggestedMax: 30 }
+                         }, {
+                         id: "B",
+						 position: 'right',
+						 scaleLabel: { display: true, labelString: 'Capacitance pF'},
+						 ticks: { suggestedMax: 0,  suggestedMax: 3, scaleBeginAtZero : false }
+                    }]
+                }
+            }
+        };
+
+        const context = document.getElementById('canvas').getContext('2d');
+
+        const lineChart = new Chart(context, config);
+
+        const source = new EventSource("/chart-data");
+
+
+        source.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            if (config.data.labels.length === 20) {
+                config.data.labels.shift();
+                config.data.datasets[0].data.shift();
+				config.data.datasets[1].data.shift();
+				config.data.datasets[2].data.shift();
+				config.data.datasets[3].data.shift();
+				config.data.datasets[4].data.shift();
+				config.data.datasets[5].data.shift();
+            }
+            config.data.labels.push(data.time1);
+            config.data.datasets[0].data.push(data.temp1);
+			config.data.datasets[1].data.push(data.temp2);
+			config.data.datasets[2].data.push(data.temp3);
+			config.data.datasets[3].data.push(data.temp4);
+			config.data.datasets[4].data.push(data.capacitance1);
+			config.data.datasets[5].data.push(data.capacitance2);
+			
+            lineChart.update();
+        }
+    });
+</script>
+</body>
+</html>
