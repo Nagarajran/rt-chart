@@ -7,3 +7,5 @@ Arduino is connted to host computer (tested with Windows 10 laptop, will move to
 Data is stored on sqlite DB on the host computer
 
 Realtime data visualized using chart.js
+
+![screen-grab](https://raw.githubusercontent.com/Nagarajran/rt-chart/main/screen1.gif)
