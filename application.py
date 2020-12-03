@@ -1,10 +1,12 @@
+#
 # mix of 
 # https://github.com/Mjrovai/RPI-Flask-SQLite -  sqlite sensor value recording + flask
 # https://github.com/johnsliao/flask-sqlite3-chartjs-toy - initial chart
 # https://github.com/roniemartinez/real-time-charts-with-flask - realtime chart updates with Flask Server Side Event SSE, no sockets used
 # put corresponding index_chart.html file in template folder
-# reading serial csv sensor data from arduino and storing in sqlite handlened by another script
-# 
+# change sensorsData.db path to where your sqlite DB is stored
+#
+ 
 import json
 import time
 from datetime import datetime
