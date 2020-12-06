@@ -12,7 +12,7 @@ import serial
 import time
 import sqlite3
 import threading
-import number
+import numbers
 
 lock = threading.Lock()
 
