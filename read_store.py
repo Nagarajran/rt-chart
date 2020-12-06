@@ -2,8 +2,9 @@
 # stores the resulting data in sqldb
 # create the DB using following 
 # more details at  https://github.com/Mjrovai/RPI-Flask-SQLite
+# host>sqlite3 sensorsData.db 
 # sqlite> BEGIN;
-# sqlite> CREATE TABLE DHT_data (timestamp DATETIME,  temp1 NUMERIC, temp2 NUMERIC, temp3 NUMERIC, temp 4NUMERIC, capacitance1 NUMERIC, capacitance2 NUMERIC,);
+# sqlite> CREATE TABLE DHT_data (timestamp DATETIME,  temp1 NUMERIC, temp2 NUMERIC, temp3 NUMERIC, temp4 NUMERIC, capacitance1 NUMERIC, capacitance2 NUMERIC);
 # sqlite> COMMIT;
 # run this python script from directory where the sqlite DB is stored
 
